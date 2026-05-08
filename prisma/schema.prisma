@@ -1,0 +1,150 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  phone         String?
+  role          Role      @default(CUSTOMER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+  vehicles      Vehicle[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  customerId      String
+  customer        User          @relation(fields: [customerId], references: [id])
+  
+  vehicleMake     String
+  vehicleModel    String
+  vehicleType     String?
+  registrationNo  String
+  mileage         Int?
+  
+  serviceType     String
+  description     String?
+  preferredDate   DateTime
+  preferredTime   String?
+  expectedCompletion DateTime?
+  
+  deliveryMethod  String
+  status          BookingStatus @default(PENDING)
+  notes           String?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  quotes          Quote[]
+}
+
+model Vehicle {
+  id             String   @id @default(cuid())
+  customerId     String
+  customer       User     @relation(fields: [customerId], references: [id])
+  make           String
+  model          String
+  registrationNo String   @unique
+  year           Int?
+  createdAt      DateTime @default(now())
+}
+
+model Quote {
+  id          String      @id @default(cuid())
+  bookingId   String
+  booking     Booking     @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  totalAmount Float
+  status      QuoteStatus @default(PENDING)
+  notes       String?
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  items       QuoteItem[]
+}
+
+model QuoteItem {
+  id          String   @id @default(cuid())
+  quoteId     String
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  
+  description String
+  category    String   // "Parts", "Labour", "Consumables", "Towing", "Other"
+  amount      Float
+  
+  createdAt   DateTime @default(now())
+}
+
+enum QuoteStatus {
+  PENDING
+  SENT
+  APPROVED
+  REJECTED
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  STAFF
+}
+
+enum BookingStatus {
+  PENDING
+  RECEIVED
+  IN_PROGRESS
+  READY_FOR_DELIVERY
+  COMPLETED
+  CANCELLED
+}
