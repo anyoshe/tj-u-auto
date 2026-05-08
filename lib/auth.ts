@@ -19,16 +19,28 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // ... inside authorize(credentials)
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
         });
 
         if (!user || !user.password) return null;
 
-        const isValid = await bcrypt.compare(
+        // 2. CHANGE THIS LINE: Remove "bcrypt." and just use "compare"
+        const isValid = await compare(
           credentials.password as string,
           user.password
         );
+        // const user = await prisma.user.findUnique({
+        //   where: { email: credentials.email as string },
+        // });
+
+        if (!user || !user.password) return null;
+
+        // const isValid = await bcrypt.compare(
+        //   credentials.password as string,
+        //   user.password
+        // );
 
         if (!isValid) return null;
 
