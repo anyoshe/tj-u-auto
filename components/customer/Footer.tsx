@@ -21,7 +21,7 @@ export default function Footer() {
 
           <div>
             <h4 className="font-semibold mb-4">Contact Us</h4>
-            <p className="text-gray-400">+254 736 889 880</p>
+            <p className="text-gray-400">+254 721 222 585</p>
             <p className="text-gray-400">Nairobi, Kenya</p>
           </div>
 

@@ -22,7 +22,8 @@ export default function Navbar() {
           <Link href="/services" className="hover:text-yellow-400 transition">Services</Link>
           <Link href="/gallery" className="hover:text-yellow-400 transition">Gallery</Link>
           <Link href="/testimonials" className="hover:text-yellow-400 transition">Testimonials</Link>
-          <Link href="/booking" className="hover:text-yellow-400 transition">Book Service</Link>
+          {/* <Link href="/booking" className="hover:text-yellow-400 transition">Book Service</Link> */}
+          <Link href="/contact" className="hover:text-yellow-400 transition">Contact</Link>
         </div>
 
         <Link 
@@ -51,7 +52,8 @@ export default function Navbar() {
             <Link href="/services" onClick={() => setIsOpen(false)} className="hover:text-yellow-400">Services</Link>
             <Link href="/gallery" onClick={() => setIsOpen(false)} className="hover:text-yellow-400">Gallery</Link>
             <Link href="/testimonials" onClick={() => setIsOpen(false)} className="hover:text-yellow-400">Testimonials</Link>
-            <Link href="/booking" onClick={() => setIsOpen(false)} className="hover:text-yellow-400">Book Service</Link>
+            {/* <Link href="/booking" onClick={() => setIsOpen(false)} className="hover:text-yellow-400">Book Service</Link> */}
+            <Link href="/contact" className="hover:text-yellow-400 transition">Contact</Link>
             
             <Link 
               href="/booking" 

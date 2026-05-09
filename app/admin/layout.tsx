@@ -59,10 +59,10 @@ export default function AdminLayout({
           </nav>
 
           <div className="pt-6 border-t border-gray-800">
-            <button className="flex items-center gap-3 text-red-400 hover:text-red-500 w-full px-4 py-3 rounded-xl hover:bg-zinc-900">
+            <Link href="/admin/logout" className="flex items-center gap-3 text-red-400 hover:text-red-500 w-full px-4 py-3 rounded-xl hover:bg-zinc-900 transition">
               <LogOut size={20} />
               Logout
-            </button>
+            </Link>
           </div>
         </div>
 

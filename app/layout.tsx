@@ -51,9 +51,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/customer/Navbar";
-import Footer from "@/components/customer/Footer";
-import WhatsAppButton from "@/components/customer/WhatsAppButton";
-import InstallButton from "@/components/customer/InstallButton";
+import FooterWrapper from "@/components/customer/FooterWrapper";
+import StackedButtons from "@/components/customer/StackedButtons";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -89,9 +88,8 @@ export default function RootLayout({
         <main className="min-h-[calc(100vh-140px)]">
           {children}
         </main>
-        <Footer />
-        <WhatsAppButton />
-        <InstallButton />
+        <FooterWrapper />
+        <StackedButtons />
       </body>
     </html>
   );

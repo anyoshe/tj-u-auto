@@ -96,7 +96,7 @@ export default function Home() {
               <div className="flex items-center gap-4">
                 <Phone className="text-yellow-400" />
                 <div>
-                  <p className="font-medium">+254 736 889 880</p>
+                  <p className="font-medium">+254 721 222 585</p>
                   <p className="text-sm text-gray-400">Call or WhatsApp</p>
                 </div>
               </div>
