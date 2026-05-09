@@ -53,7 +53,7 @@ export default function AdminLayout({
               <Car size={20} />
               Vehicles
             </Link>
-            <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-900 text-white transition">
+            <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-900 text-white transition" onClick={() => setSidebarOpen(false)}>
               👥 Users
             </Link>
           </nav>

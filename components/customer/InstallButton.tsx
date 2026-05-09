@@ -16,7 +16,17 @@ export default function InstallButton() {
 
     window.addEventListener("beforeinstallprompt", handler);
 
-    // Also show button after some time for users who already have PWA
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered successfully:', registration);
+        })
+        .catch((error) => {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
+
     const timeout = setTimeout(() => {
       setShowInstall(true);
     }, 8000);
@@ -29,7 +39,9 @@ export default function InstallButton() {
 
   const handleInstall = async () => {
     if (!deferredPrompt) {
-      alert("Installation prompt not available. Try using Chrome or Edge on desktop/mobile.");
+      alert(
+        "Install prompt not available yet. Open this page in Chrome or Edge on a supported device, then reload to trigger the install prompt."
+      );
       return;
     }
 
