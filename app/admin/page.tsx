@@ -1,4 +1,24 @@
-export default function AdminDashboard() {
+import { prisma } from "@/lib/prisma"; // 1. IMPORT PRISMA
+
+export const dynamic = 'force-dynamic'; // 2. PREVENTS STALE DATA
+
+export default async function AdminDashboard() {
+  // 3. FETCH ACTUAL COUNTS FROM NEON
+  const pendingCount = await prisma.booking.count({
+    where: { status: 'PENDING' } // Adjust 'PENDING' to match your Schema
+  });
+  
+  const inProgressCount = await prisma.booking.count({
+    where: { status: 'IN_PROGRESS' }
+  });
+
+  const completedCount = await prisma.booking.count({
+    where: { 
+      status: 'COMPLETED',
+      // Optional: filter for today
+    }
+  });
+// export default function AdminDashboard() {
   return (
     <div className="space-y-8 pt-10">
       <div>
