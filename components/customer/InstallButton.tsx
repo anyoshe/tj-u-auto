@@ -6,15 +6,32 @@ import { Download } from "lucide-react";
 export default function InstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstall, setShowInstall] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
+    const checkInstalled = () => {
+      const standalone = window.matchMedia("(display-mode: standalone)").matches;
+      const iosStandalone = (window.navigator as any).standalone === true;
+      if (standalone || iosStandalone) {
+        setIsInstalled(true);
+      }
+    };
+
     const handler = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstall(true);
     };
 
+    const installedHandler = () => {
+      setShowInstall(false);
+      setDeferredPrompt(null);
+      setIsInstalled(true);
+    };
+
+    checkInstalled();
     window.addEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", installedHandler);
 
     // Register service worker for PWA
     if ('serviceWorker' in navigator) {
@@ -33,6 +50,7 @@ export default function InstallButton() {
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("appinstalled", installedHandler);
       clearTimeout(timeout);
     };
   }, []);
@@ -50,11 +68,12 @@ export default function InstallButton() {
     
     if (outcome === "accepted") {
       setShowInstall(false);
+      setIsInstalled(true);
     }
     setDeferredPrompt(null);
   };
 
-  if (!showInstall) return null;
+  if (!showInstall || isInstalled) return null;
 
   return (
     <button
