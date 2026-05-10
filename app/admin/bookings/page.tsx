@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import { BookingsList } from "./BookingsList";
-
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default async function BookingsPage() {
   const bookings = await prisma.booking.findMany({
@@ -21,11 +21,12 @@ export default async function BookingsPage() {
   }));
 
   return (
-    <div className="space-y-6 pt-10">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-3xl md:text-4xl font-bold">All Bookings</h1>
-        <p className="text-gray-400">{bookings.length} Total Requests</p>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="All Bookings"
+        subtitle="Review and manage incoming service requests for the workshop."
+        trailing={<p className="text-gray-400">{bookings.length} Total Requests</p>}
+      />
 
       <BookingsList bookings={bookingItems} />
     </div>

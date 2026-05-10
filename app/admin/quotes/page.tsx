@@ -1,8 +1,31 @@
 import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+
+type QuoteItem = {
+  description: string;
+  category: string;
+  amount: number;
+};
+
+type QuoteWithBooking = {
+  id: string;
+  totalAmount: number;
+  status: string;
+  createdAt: Date;
+  booking?: {
+    customer?: {
+      name: string | null;
+      phone: string | null;
+    } | null;
+    vehicleMake?: string | null;
+    vehicleModel?: string | null;
+  } | null;
+  items: QuoteItem[];
+};
 
 export default async function QuotesPage() {
-  let quotes: any[] = [];
+  let quotes: QuoteWithBooking[] = [];
 
   try {
     quotes = await prisma.quote.findMany({
@@ -23,17 +46,18 @@ export default async function QuotesPage() {
   }
 
   return (
-    <div className="space-y-6 mt-10">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-3xl md:text-4xl font-bold">Quotations</h1>
-        <p className="text-gray-400">{quotes.length} Total Quotations</p>
-      </div>
+    <div className="space-y-6 ">
+      <AdminPageHeader
+        title="Quotations"
+        subtitle="Track quotes for approved bookings and review details quickly."
+        trailing={<p className="text-gray-400">{quotes.length} Total Quotations</p>}
+      />
 
       {quotes.length === 0 ? (
         <div className="bg-zinc-900 rounded-3xl p-20 text-center">
           <p className="text-2xl text-gray-400">No quotations found yet</p>
           <p className="text-sm text-gray-500 mt-4">
-            Go to Bookings → Change status to "RECEIVED" → Create Quote
+            Go to Bookings → Change status to &quot;RECEIVED&quot; → Create Quote
           </p>
         </div>
       ) : (
@@ -53,7 +77,7 @@ export default async function QuotesPage() {
                 </tr>
               </thead>
               <tbody>
-                {quotes.map((quote: any) => (
+                {quotes.map((quote) => (
                   <tr key={quote.id} className="border-b border-gray-800 hover:bg-zinc-800/50">
                     <td className="p-6">
                       <p className="font-medium">{quote.booking?.customer?.name || "N/A"}</p>
@@ -95,7 +119,7 @@ export default async function QuotesPage() {
 
           {/* Mobile Cards */}
           <div className="md:hidden space-y-4">
-            {quotes.map((quote: any) => (
+            {quotes.map((quote) => (
               <div key={quote.id} className="bg-zinc-900 p-6 rounded-3xl">
                 <div className="flex justify-between items-start">
                   <div>

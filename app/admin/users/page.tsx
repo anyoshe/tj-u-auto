@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
@@ -14,9 +15,11 @@ export default async function UsersPage() {
   });
 
   return (
-    <div className="space-y-6 mt-10">
-      <h1 className="text-4xl font-bold">User Management</h1>
-      <p className="text-gray-400">Manage Admin & Staff Accounts</p>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="User Management"
+        subtitle="Manage admin and staff accounts, privileges, and access."
+      />
 
       <div className="bg-zinc-900 rounded-3xl overflow-hidden">
         <table className="w-full">

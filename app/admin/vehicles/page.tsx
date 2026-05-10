@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
 export default async function VehiclesPage() {
   const vehicles = await prisma.vehicle.findMany({
@@ -30,16 +31,15 @@ export default async function VehiclesPage() {
   const vehicleStats = vehicleBookingCounts.reduce((acc, stat) => {
     acc[stat.vehicleId] = stat;
     return acc;
-  }, {} as Record<string, { bookingCount: number; lastBooking: any }>);
+  }, {} as Record<string, { bookingCount: number; lastBooking: { createdAt: Date } | null }>);
 
   return (
-    <div className="space-y-6 mt-10">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Vehicle Management</h1>
-        <span className="bg-yellow-400/10 text-yellow-400 px-4 py-2 rounded-full text-sm font-semibold">
-          {vehicles.length} Vehicles
-        </span>
-      </div>
+    <div className="space-y-6">
+      <AdminPageHeader
+        title="Vehicle Management"
+        subtitle="Manage registered vehicles, view usage details, and service history."
+        trailing={<span className="bg-yellow-400/10 text-yellow-400 px-4 py-2 rounded-full text-sm font-semibold">{vehicles.length} Vehicles</span>}
+      />
 
       {vehicles.length === 0 ? (
         <div className="bg-zinc-900 rounded-lg p-12 text-center">

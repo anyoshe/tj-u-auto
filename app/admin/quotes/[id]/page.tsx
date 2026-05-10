@@ -95,7 +95,7 @@ export default function QuoteDetailPage({
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-10 mt-10">
+    <div className="max-w-4xl mx-auto space-y-8 pb-10">
       <div className="flex flex-col md:flex-row justify-between items-start gap-4">
         <div>
           <h1 className="text-4xl font-bold">Quotation Details</h1>
