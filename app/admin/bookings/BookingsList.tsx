@@ -11,6 +11,7 @@ type BookingListItem = {
   vehicleMake: string;
   vehicleModel: string;
   registrationNo: string;
+  chassisNo: string | null;
   serviceType: string;
   preferredDateLabel: string;
   status: string;
@@ -61,6 +62,11 @@ export function BookingsList({ bookings }: { bookings: BookingListItem[] }) {
                   <p className="text-sm text-gray-400">
                     {booking.registrationNo}
                   </p>
+                  {booking.chassisNo ? (
+                    <p className="text-xs text-gray-500">
+                      Chassis: {booking.chassisNo}
+                    </p>
+                  ) : null}
                 </td>
                 <td className="p-6">{booking.serviceType}</td>
                 <td className="p-6 text-sm">{booking.preferredDateLabel}</td>
@@ -91,6 +97,11 @@ export function BookingsList({ bookings }: { bookings: BookingListItem[] }) {
                 <strong>Vehicle:</strong> {booking.vehicleMake}{" "}
                 {booking.vehicleModel} ({booking.registrationNo})
               </p>
+              {booking.chassisNo ? (
+                <p>
+                  <strong>Chassis:</strong> {booking.chassisNo}
+                </p>
+              ) : null}
               <p>
                 <strong>Service:</strong> {booking.serviceType}
               </p>

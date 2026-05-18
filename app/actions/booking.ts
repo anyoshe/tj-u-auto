@@ -69,6 +69,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 import {
   sendWhatsAppNotification,
   sendEmailNotification,
@@ -104,8 +105,14 @@ export async function createBooking(formData: any) {
           make: formData.make,
           model: formData.model,
           registrationNo: formData.registrationNo,
+          chassisNo: formData.chassisNo || null,
           year: null, // You can add year field later if needed
         },
+      });
+    } else if (!vehicle.chassisNo && formData.chassisNo) {
+      vehicle = await prisma.vehicle.update({
+        where: { id: vehicle.id },
+        data: { chassisNo: formData.chassisNo },
       });
     }
 
@@ -116,6 +123,7 @@ export async function createBooking(formData: any) {
         vehicleModel: formData.model,
         vehicleType: formData.type,
         registrationNo: formData.registrationNo,
+        chassisNo: formData.chassisNo || null,
         mileage: formData.mileage ? parseInt(formData.mileage) : null,
         
         serviceType: formData.serviceType,
@@ -191,6 +199,10 @@ export async function createBooking(formData: any) {
         adminEmailContent
       );
     }
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/bookings");
+    revalidatePath("/admin/vehicles");
 
     return { 
       success: true, 

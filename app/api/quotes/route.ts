@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { randomUUID } from "crypto";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 type QuoteItemPayload = {
@@ -107,6 +108,9 @@ export async function POST(request: NextRequest) {
         items: createdItems,
       };
     });
+
+    revalidatePath("/admin");
+    revalidatePath("/admin/quotes");
 
     return NextResponse.json({
       success: true,

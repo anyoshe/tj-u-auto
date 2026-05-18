@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
+export const dynamic = "force-dynamic";
+
 export default async function VehiclesPage() {
   const vehicles = await prisma.vehicle.findMany({
     include: {
@@ -53,6 +55,7 @@ export default async function VehiclesPage() {
                 <th className="text-left p-6 font-semibold text-gray-300">Customer</th>
                 <th className="text-left p-6 font-semibold text-gray-300">Vehicle</th>
                 <th className="text-left p-6 font-semibold text-gray-300">Registration</th>
+                <th className="text-left p-6 font-semibold text-gray-300">Chassis</th>
                 <th className="text-left p-6 font-semibold text-gray-300">Last Service</th>
                 <th className="text-center p-6 font-semibold text-gray-300">Bookings</th>
               </tr>
@@ -72,6 +75,9 @@ export default async function VehiclesPage() {
                     </td>
                     <td className="p-6">
                       <p className="font-mono text-sm font-semibold text-yellow-400">{vehicle.registrationNo}</p>
+                    </td>
+                    <td className="p-6">
+                      <p className="font-mono text-sm text-gray-300">{vehicle.chassisNo || "N/A"}</p>
                     </td>
                     <td className="p-6 text-sm text-gray-400">
                       {stats?.lastBooking 

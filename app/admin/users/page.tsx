@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
+export const dynamic = "force-dynamic";
+
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
     select: {

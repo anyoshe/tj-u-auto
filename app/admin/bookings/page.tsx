@@ -3,6 +3,8 @@ import { format } from "date-fns";
 import { BookingsList } from "./BookingsList";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
+export const dynamic = "force-dynamic";
+
 export default async function BookingsPage() {
   const bookings = await prisma.booking.findMany({
     include: { customer: true },
@@ -15,6 +17,7 @@ export default async function BookingsPage() {
     vehicleMake: booking.vehicleMake,
     vehicleModel: booking.vehicleModel,
     registrationNo: booking.registrationNo,
+    chassisNo: booking.chassisNo,
     serviceType: booking.serviceType,
     preferredDateLabel: format(new Date(booking.preferredDate), "dd MMM yyyy"),
     status: booking.status,

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 
+export const dynamic = "force-dynamic";
+
 type QuoteItem = {
   description: string;
   category: string;

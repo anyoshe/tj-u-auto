@@ -23,6 +23,7 @@ export async function PATCH(
       data: { status },
     });
 
+    revalidatePath("/admin");
     revalidatePath("/admin/quotes");
     revalidatePath(`/admin/quotes/${id}`);
 

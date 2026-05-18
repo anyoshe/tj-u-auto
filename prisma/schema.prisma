@@ -71,6 +71,7 @@ model Booking {
   vehicleModel    String
   vehicleType     String?
   registrationNo  String
+  chassisNo       String?
   mileage         Int?
   
   serviceType     String
@@ -96,6 +97,7 @@ model Vehicle {
   make           String
   model          String
   registrationNo String   @unique
+  chassisNo      String?  @unique
   year           Int?
   createdAt      DateTime @default(now())
 }
