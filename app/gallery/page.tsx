@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Play, X } from "lucide-react";
+import { Play } from "lucide-react";
 import { useState, useEffect } from "react";
 
 type GalleryItem = {
@@ -9,49 +9,53 @@ type GalleryItem = {
   src: string;
   alt: string;
   thumbnail?: string;
+  sources?: { src: string; type: string }[];
 };
 
+const galleryItems: GalleryItem[] = [
+  {
+    type: "video",
+    src: "/videos/workshopinterior.mp4",
+    sources: [{ src: "/videos/workshopinterior.mp4", type: "video/mp4" }],
+    alt: "Workshop Interior Tour",
+    thumbnail: "/images/workshopinteriorthumbnail.jpg",
+  },
+  { type: "image", src: "/images/gateimage.png", alt: "Workshop Exterior" },
+  {
+    type: "video",
+    src: "/videos/tjuvideoprecision.mp4",
+    sources: [{ src: "/videos/tjuvideoprecision.mp4", type: "video/mp4" }],
+    alt: "In a Nutshell: Precision Work",
+    thumbnail: "/images/inanutshell.jpg",
+  },
+  { type: "image", src: "/images/beforeandafter.png", alt: "Before & After Repair" },
+  {
+    type: "video",
+    src: "/videos/beforeaftertju-video.mp4",
+    sources: [{ src: "/videos/beforeaftertju-video.mp4", type: "video/mp4" }],
+    alt: "Before & After Comparison",
+    thumbnail: "/images/beforeandafterthumbnail.jpg",
+  },
+  { type: "image", src: "/images/tjuimage4.jpeg", alt: "Workshop Entry Area" },
+  {
+    type: "video",
+    src: "/videos/tjubackground-video.mp4",
+    sources: [{ src: "/videos/tjubackground-video.mp4", type: "video/mp4" }],
+    alt: "Spray Painting Work",
+    thumbnail: "/images/spraybodyworkthumbnail.jpg",
+  },
+  { type: "image", src: "/images/enginework.png", alt: "Professional Engine Work" },
+  {
+    type: "video",
+    src: "/videos/dailyworkshop.mp4",
+    sources: [{ src: "/videos/dailyworkshop.mp4", type: "video/mp4" }],
+    alt: "Daily Workshop Activity",
+    thumbnail: "/images/dailyworkshopthumbnail.jpg",
+  },
+];
+
 export default function GalleryPage() {
-  const galleryItems: GalleryItem[] = [
-    
-    { 
-      type: "video", 
-      src: "/videos/workshopinterior.mp4", 
-      alt: "Workshop Interior Tour",
-      thumbnail: "/images/workshopinteriorthumbnail.jpg" 
-    },
-    { type: "image", src: "/images/gateimage.png", alt: "Workshop Exterior" },
-    { 
-      type: "video", 
-      src: "/videos/tjuvideoprecision.mp4", 
-      alt: "In a Nutshell: Precision Work",
-      thumbnail: "/images/inanutshell.jpg" 
-    },
-    { type: "image", src: "/images/beforeandafter.png", alt: "Before & After Repair" },
-    { 
-      type: "video", 
-      src: "/videos/beforeaftertju-video.mp4", 
-      alt: "Before & After Comparison",
-      thumbnail: "/images/beforeandafterthumbnail.jpg" 
-    },
-    { type: "image", src: "/images/tjuimage4.jpeg", alt: "Workshop Entry Area" },
-
-    { 
-      type: "video", 
-      src: "/videos/tjubackground-video.mp4", 
-      alt: "Spray Painting Work",
-      thumbnail: "/images/spraybodyworkthumbnail.jpg"
-    },
-    { type: "image", src: "/images/enginework.png", alt: "Professional Engine Work" },
-    { 
-      type: "video", 
-      src: "/videos/dailyworkshop.mp4", 
-      alt: "Daily Workshop Activity",
-      thumbnail: "/images/dailyworkshopthumbnail.jpg"
-    },
-  ];
-
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
 
   // Close modal with Escape key
   useEffect(() => {
@@ -153,7 +157,11 @@ export default function GalleryPage() {
                   poster={selectedItem.thumbnail}
                   className="w-full max-h-[85vh] rounded-t-2xl"
                 >
-                  <source src={selectedItem.src} type="video/mp4" />
+                  {(selectedItem.sources ?? [{ src: selectedItem.src, type: "video/mp4" }]).map(
+                    (source) => (
+                      <source key={source.src} src={source.src} type={source.type} />
+                    )
+                  )}
                 </video>
               )}
 

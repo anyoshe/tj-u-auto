@@ -21,6 +21,12 @@
 # production
 /build
 
+# video alternates
+# Keep only the production video format referenced by the app in git.
+public/videos/*.webm
+public/videos/*.mov
+public/videos/*.avi
+
 # misc
 .DS_Store
 *.pem

@@ -6,37 +6,46 @@ import { Phone, MapPin, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import ReviewSection from "@/components/customer/ReviewSection";
 
-export default function Home() {
-  const backgroundMedia = [
-    {
-      type: "video",
-      src: "/videos/workshopinterior.mp4",
-      alt: "Workshop Interior",
-      poster: "/images/workshopinteriorthumbnail.jpg",
-    },
-    { type: "image", src: "/images/beforeandafter.png", alt: "Workshop 2" },
-    {
-      type: "video",
-      src: "/videos/beforeaftertju-video.mp4",
-      alt: "Repair Work",
-      poster: "/images/beforeandafterthumbnail.jpg",
-    },
-    { type: "image", src: "/images/tjuimage4.jpeg", alt: "Workshop 3" },
-    {
-      type: "video",
-      src: "/videos/tjubackground-video1.mp4",
-      alt: "Painting Work",
-      poster: "/images/backgroundthumbnail.jpg",
-    },
-    { type: "image", src: "/images/tjuentry.png", alt: "Our Gate" },
-    {
-      type: "video",
-      src: "/videos/tjubackground-video.mp4",
-      alt: "Workshop 1",
-      poster: "/images/tjuimage1.jpeg",
-    },
-  ];
+type BackgroundMedia =
+  | {
+      type: "video";
+      sources: { src: string; type: string }[];
+      alt: string;
+      poster: string;
+    }
+  | { type: "image"; src: string; alt: string };
 
+const backgroundMedia: BackgroundMedia[] = [
+  {
+    type: "video",
+    sources: [{ src: "/videos/workshopinterior.mp4", type: "video/mp4" }],
+    alt: "Workshop Interior",
+    poster: "/images/workshopinteriorthumbnail.jpg",
+  },
+  { type: "image", src: "/images/beforeandafter.png", alt: "Workshop 2" },
+  {
+    type: "video",
+    sources: [{ src: "/videos/beforeaftertju-video.mp4", type: "video/mp4" }],
+    alt: "Repair Work",
+    poster: "/images/beforeandafterthumbnail.jpg",
+  },
+  { type: "image", src: "/images/tjuimage4.jpeg", alt: "Workshop 3" },
+  {
+    type: "video",
+    sources: [{ src: "/videos/tjubackground-video1.mp4", type: "video/mp4" }],
+    alt: "Painting Work",
+    poster: "/images/backgroundthumbnail.jpg",
+  },
+  { type: "image", src: "/images/tjuentry.png", alt: "Our Gate" },
+  {
+    type: "video",
+    sources: [{ src: "/videos/tjubackground-video.mp4", type: "video/mp4" }],
+    alt: "Workshop 1",
+    poster: "/images/tjuimage1.jpeg",
+  },
+];
+
+export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Auto advance logic
@@ -76,7 +85,9 @@ export default function Home() {
                 preload="metadata"
                 poster={backgroundMedia[currentIndex].poster}
               >
-                <source src={backgroundMedia[currentIndex].src} type="video/mp4" />
+                {backgroundMedia[currentIndex].sources.map((source) => (
+                  <source key={source.src} src={source.src} type={source.type} />
+                ))}
               </video>
             ) : (
               <Image
@@ -217,7 +228,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-12">What Our Customers Say</h2>
           <div className="max-w-2xl mx-auto italic text-lg text-gray-300">
-            "Best service I have received in Nairobi. Honest, professional and timely. Highly recommended!"
+            &quot;Best service I have received in Nairobi. Honest, professional and timely. Highly recommended!&quot;
           </div>
           <p className="mt-4 text-yellow-400">- John Mwangi, Toyota Owner</p>
 
