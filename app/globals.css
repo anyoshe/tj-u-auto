@@ -136,3 +136,8 @@
 
 .text-primary { color: rgb(234 179 8); }
 .bg-primary { background-color: rgb(234 179 8); }
+
+@keyframes slowSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

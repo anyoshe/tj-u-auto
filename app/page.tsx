@@ -1,129 +1,290 @@
+"use client";
+
 import Link from "next/link";
-import { Phone, MapPin, Clock, Star, ArrowRight } from "lucide-react";
+import { Phone, MapPin, ArrowRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import ReviewSection from "@/components/customer/ReviewSection";
 
 export default function Home() {
+  const backgroundMedia = [
+    { type: "video", src: "/videos/workshopinterior.mp4", alt: "Workshop Interior" },
+    { type: "image", src: "/images/beforeandafter.png", alt: "Workshop 2" },
+    { type: "video", src: "/videos/beforeaftertju-video.mp4", alt: "Repair Work" },
+    { type: "image", src: "/images/tjuimage4.jpeg", alt: "Workshop 3" },
+    { type: "video", src: "/videos/tjubackground-video1.mp4", alt: "Painting Work" },
+    { type: "image", src: "/images/tjuentry.png", alt: "Our Gate" },
+    { type: "video", src: "/videos/tjubackground-video.mp4", alt: "Workshop 1" },
+
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  // Handle video playback
+  useEffect(() => {
+    // Pause all videos first
+    videoRefs.current.forEach((video, idx) => {
+      if (video) {
+        if (idx === currentIndex) {
+          video.play().catch(() => { });   // Play current video
+        } else {
+          video.pause();                  // Pause others
+        }
+      }
+    });
+  }, [currentIndex]);
+
+  // Auto advance logic
+  useEffect(() => {
+    const currentMedia = backgroundMedia[currentIndex];
+
+    if (currentMedia.type === "image") {
+      const timer = setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % backgroundMedia.length);
+      }, 7000);
+      return () => clearTimeout(timer);
+    }
+    // For videos, we rely on onEnded event
+  }, [currentIndex]);
+
+  const goToIndex = (index: number) => {
+    setCurrentIndex(index);
+  };
+
   return (
-    <main className="bg-black text-white pt-20">
-      {/* Hero */}
-      <section className="min-h-[90vh] flex items-center justify-center bg-gradient-to-br from-yellow-950 via-black to-black relative">
-        <div className="text-center px-6 max-w-4xl mx-auto">
-          <h1 className="text-6xl md:text-7xl font-bold mb-6">
+    <main className="bg-black text-white">
+      <section className="min-h-[100vh] flex items-center justify-center relative overflow-hidden">
+
+        {/* Background Media */}
+        <div className="absolute inset-0 z-0">
+          {backgroundMedia.map((media, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? "opacity-100" : "opacity-0"
+                }`}
+            >
+              {media.type === "video" ? (
+                <video
+                  ref={(el) => { videoRefs.current[index] = el; }}
+                  muted
+                  playsInline
+                  className="object-cover w-full h-full brightness-[0.65]"
+                  onEnded={() => {
+                    setCurrentIndex((prev) => (prev + 1) % backgroundMedia.length);
+                  }}
+                  autoPlay={index === currentIndex}
+                  loop={false}
+                >
+                  <source src={media.src} type="video/mp4" />
+                </video>
+              ) : (
+                <div
+                  className="w-full h-full bg-cover bg-center"
+                  style={{ backgroundImage: `url(${media.src})` }}
+                />
+              )}
+            </div>
+          ))}
+
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black/90" />
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 text-center px-5 sm:px-6 max-w-5xl mx-auto">
+          <div className="mb-6 inline-flex items-center gap-2 bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 px-5 py-2 rounded-full text-sm font-medium">
+            Trusted Auto Experts in Nairobi
+          </div>
+
+          <h1 className="text-5xl md:text-6xl lg:text-[5.5rem] font-bold mb-6 tracking-tighter leading-none">
             TJ AND U <span className="text-yellow-400">AUTO</span>
           </h1>
-          <p className="text-2xl text-gray-300 mb-10">
-            Expert Auto Repair &amp; Maintenance Services in Nairobi
+
+          <p className="text-xl md:text-2xl lg:text-3xl text-gray-200 mb-10 max-w-3xl mx-auto">
+            Expert Auto Repair, Maintenance &amp; Body Work Services
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/booking"
-              className="bg-yellow-400 hover:bg-yellow-300 text-black px-10 py-4 rounded-full text-lg font-semibold transition"
+              className="bg-yellow-400 hover:bg-yellow-300 text-black px-8 sm:px-10 py-4 rounded-full text-lg font-semibold transition-all duration-300 flex items-center gap-3 group w-full sm:w-auto"
             >
               Book Service Now
+              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             </Link>
+
             <Link
               href="/about"
-              className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-10 py-4 rounded-full text-lg font-semibold transition"
+              className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-8 sm:px-10 py-4 rounded-full text-lg font-semibold transition-all duration-300 w-full sm:w-auto"
             >
               Learn More About Us
             </Link>
           </div>
+
+          <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-x-6 gap-y-4 text-sm text-gray-400">
+            <div className="flex items-center gap-2">
+              <span className="text-yellow-400 text-xl">★</span> 4.9/5 from Happy Customers
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone className="w-5 h-5" /> +254 721 222 585
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" /> Nairobi, Kenya
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Dots */}
+        <div className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 z-20">
+          <div className="flex gap-3">
+            {backgroundMedia.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? "bg-yellow-400 scale-125" : "bg-white/50 hover:bg-white/80"
+                  }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Scroll Prompt */}
+        <div className="absolute bottom-8 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center text-gray-400 text-sm animate-bounce pointer-events-none">
+          Scroll to explore
+          <span className="text-2xl mt-1">↓</span>
         </div>
       </section>
 
-      {/* Services Overview */}
-      <section className="py-20 bg-zinc-950">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-4">Our Services</h2>
+      {/* ====================== REST OF THE PAGE ====================== */}
+      {/* Services Section */}
+      <section className="py-16 md:py-20 bg-zinc-950">
+        <div className="max-w-6xl mx-auto px-5 md:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Our Services</h2>
           <p className="text-center text-gray-400 mb-12">Professional care for your vehicle</p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <ServiceCard title="General Servicing" desc="Routine maintenance, oil change, filters" link="/services" />
-            <ServiceCard title="Mechanical Repairs" desc="Engine, suspension, transmission &amp; more" link="/services" />
-            <ServiceCard title="Accident Repair &amp; Painting" desc="Insurance approved body work" link="/services" />
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            <ServiceCard title="General Servicing" desc="Routine maintenance, oil change, filters &amp; brake service" link="/services" />
+            <ServiceCard title="Mechanical Repairs" desc="Engine, suspension, transmission, gearbox &amp; diagnostics" link="/services" />
+            <ServiceCard title="Accident Repair &amp; Painting" desc="Insurance approved body work and quality painting" link="/services" />
+          </div>
+        </div>
+      </section>
+      {/* ====================== SERVICES SECTION ====================== */}
+      <section className="py-16 md:py-20 bg-zinc-950">
+        <div className="max-w-6xl mx-auto px-5 md:px-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Our Services</h2>
+          <p className="text-center text-gray-400 mb-12">Professional care for your vehicle</p>
+
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            <ServiceCard
+              title="General Servicing"
+              desc="Routine maintenance, oil change, filters &amp; brake service"
+              link="/services"
+            />
+            <ServiceCard
+              title="Mechanical Repairs"
+              desc="Engine, suspension, transmission, gearbox &amp; diagnostics"
+              link="/services"
+            />
+            <ServiceCard
+              title="Accident Repair &amp; Painting"
+              desc="Insurance approved body work and quality painting"
+              link="/services"
+            />
           </div>
         </div>
       </section>
 
-      {/* Gallery Teaser */}
-      <section className="py-20">
+      {/* ====================== GALLERY TEASER ====================== */}
+      <section className="py-20 bg-black">
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-4">Our Work</h2>
-          <p className="text-gray-400 mb-8">See our workshop and completed projects</p>
-          <Link href="/gallery" className="inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300">
+          <h2 className="text-4xl font-bold mb-4">Our Work Speaks</h2>
+          <p className="text-gray-400 mb-8">See some of our recent projects</p>
+          <Link
+            href="/gallery"
+            className="inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 text-lg font-medium"
+          >
             View Full Gallery <ArrowRight />
           </Link>
         </div>
       </section>
 
-      {/* Testimonials Teaser */}
+      {/* ====================== TESTIMONIALS ====================== */}
       <section className="py-20 bg-zinc-900">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-12">What Our Customers Say</h2>
-          {/* You can add real testimonials later */}
-          <p className="italic text-lg max-w-2xl mx-auto">
-            "Best service I have received in Nairobi. Professional and honest team."
-          </p>
-          <Link href="/testimonials" className="text-yellow-400 mt-8 inline-block">
+          <div className="max-w-2xl mx-auto italic text-lg text-gray-300">
+            "Best service I have received in Nairobi. Honest, professional and timely. Highly recommended!"
+          </div>
+          <p className="mt-4 text-yellow-400">- John Mwangi, Toyota Owner</p>
+
+          <Link href="/testimonials" className="text-yellow-400 mt-10 inline-block hover:underline">
             Read More Reviews →
           </Link>
         </div>
       </section>
+
       {/* Customer Reviews Section */}
       <ReviewSection />
 
-      {/* Insurance Partners */}
+      {/* ====================== INSURANCE PARTNERS ====================== */}
       <section className="py-16 bg-zinc-950">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-3">Insurance Partners</h2>
-          <p className="text-gray-400 mb-10">We are approved by leading insurance companies for seamless repairs and claims processing</p>
+          <p className="text-gray-400 mb-10">We work with leading insurance companies for seamless claims</p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-75 hover:opacity-100 transition-all duration-300">
-            <div className="text-2xl font-semibold text-gray-300">Jubilee Insurance</div>
-            <div className="text-2xl font-semibold text-gray-300">CIC Insurance</div>
-            <div className="text-2xl font-semibold text-gray-300">APA Insurance</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-75">
+            <div className="text-2xl font-semibold text-gray-300">Jubilee</div>
+            <div className="text-2xl font-semibold text-gray-300">CIC</div>
+            <div className="text-2xl font-semibold text-gray-300">APA</div>
             <div className="text-2xl font-semibold text-gray-300">Britam</div>
           </div>
         </div>
       </section>
 
-      {/* Contact */}
-      <section id="contact" className="py-20 bg-black border-t border-yellow-400/20">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+      {/* ====================== CONTACT / FINAL CTA ====================== */}
+      <section className="py-20 bg-black border-t border-yellow-400/20">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold mb-8">Get In Touch</h2>
+            <h2 className="text-4xl font-bold mb-8">Ready to Service Your Vehicle?</h2>
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <Phone className="text-yellow-400" />
+                <Phone className="text-yellow-400 w-6 h-6" />
                 <div>
-                  <p className="font-medium">+254 721 222 585</p>
-                  <p className="text-sm text-gray-400">Call or WhatsApp</p>
+                  <p className="font-medium text-lg">+254 721 222 585</p>
+                  <p className="text-gray-400">Call or WhatsApp us</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <MapPin className="text-yellow-400" />
+                <MapPin className="text-yellow-400 w-6 h-6" />
                 <div>
-                  <p>Nairobi, Kenya</p>
-                  <p className="text-sm text-gray-400">Physical Location</p>
+                  <p className="font-medium">TJ and U Complex, Nairobi</p>
+                  <p className="text-gray-400">Visit our workshop</p>
                 </div>
               </div>
             </div>
           </div>
+
           <div>
-            <Link href="/booking" className="block bg-yellow-400 text-black text-center py-6 rounded-2xl text-xl font-semibold hover:bg-yellow-300">
-              Make a Booking →
+            <Link
+              href="/booking"
+              className="block bg-yellow-400 text-black text-center py-8 rounded-3xl text-2xl font-semibold hover:bg-yellow-300 transition"
+            >
+              Book Your Service Now →
             </Link>
           </div>
         </div>
       </section>
     </main>
   );
+
 }
 
+
+// ServiceCard Component
 function ServiceCard({ title, desc, link }: { title: string; desc: string; link: string }) {
   return (
     <Link href={link} className="block group">
-      <div className="bg-zinc-900 p-8 rounded-3xl border border-transparent group-hover:border-yellow-400 transition-all h-full">
+      <div className="bg-zinc-900 p-8 rounded-3xl border border-transparent group-hover:border-yellow-400 transition-all h-full hover:scale-[1.02]">
         <h3 className="text-2xl font-semibold mb-3 group-hover:text-yellow-400 transition">{title}</h3>
         <p className="text-gray-400">{desc}</p>
       </div>
