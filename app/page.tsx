@@ -1,38 +1,43 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Phone, MapPin, ArrowRight } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import ReviewSection from "@/components/customer/ReviewSection";
 
 export default function Home() {
   const backgroundMedia = [
-    { type: "video", src: "/videos/workshopinterior.mp4", alt: "Workshop Interior" },
+    {
+      type: "video",
+      src: "/videos/workshopinterior.mp4",
+      alt: "Workshop Interior",
+      poster: "/images/workshopinteriorthumbnail.jpg",
+    },
     { type: "image", src: "/images/beforeandafter.png", alt: "Workshop 2" },
-    { type: "video", src: "/videos/beforeaftertju-video.mp4", alt: "Repair Work" },
+    {
+      type: "video",
+      src: "/videos/beforeaftertju-video.mp4",
+      alt: "Repair Work",
+      poster: "/images/beforeandafterthumbnail.jpg",
+    },
     { type: "image", src: "/images/tjuimage4.jpeg", alt: "Workshop 3" },
-    { type: "video", src: "/videos/tjubackground-video1.mp4", alt: "Painting Work" },
+    {
+      type: "video",
+      src: "/videos/tjubackground-video1.mp4",
+      alt: "Painting Work",
+      poster: "/images/backgroundthumbnail.jpg",
+    },
     { type: "image", src: "/images/tjuentry.png", alt: "Our Gate" },
-    { type: "video", src: "/videos/tjubackground-video.mp4", alt: "Workshop 1" },
-
+    {
+      type: "video",
+      src: "/videos/tjubackground-video.mp4",
+      alt: "Workshop 1",
+      poster: "/images/tjuimage1.jpeg",
+    },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-
-  // Handle video playback
-  useEffect(() => {
-    // Pause all videos first
-    videoRefs.current.forEach((video, idx) => {
-      if (video) {
-        if (idx === currentIndex) {
-          video.play().catch(() => { });   // Play current video
-        } else {
-          video.pause();                  // Pause others
-        }
-      }
-    });
-  }, [currentIndex]);
 
   // Auto advance logic
   useEffect(() => {
@@ -57,34 +62,33 @@ export default function Home() {
 
         {/* Background Media */}
         <div className="absolute inset-0 z-0">
-          {backgroundMedia.map((media, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? "opacity-100" : "opacity-0"
-                }`}
-            >
-              {media.type === "video" ? (
-                <video
-                  ref={(el) => { videoRefs.current[index] = el; }}
-                  muted
-                  playsInline
-                  className="object-cover w-full h-full brightness-[0.65]"
-                  onEnded={() => {
-                    setCurrentIndex((prev) => (prev + 1) % backgroundMedia.length);
-                  }}
-                  autoPlay={index === currentIndex}
-                  loop={false}
-                >
-                  <source src={media.src} type="video/mp4" />
-                </video>
-              ) : (
-                <div
-                  className="w-full h-full bg-cover bg-center"
-                  style={{ backgroundImage: `url(${media.src})` }}
-                />
-              )}
-            </div>
-          ))}
+          <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100">
+            {backgroundMedia[currentIndex].type === "video" ? (
+              <video
+                muted
+                playsInline
+                className="object-cover w-full h-full brightness-[0.65]"
+                onEnded={() => {
+                  setCurrentIndex((prev) => (prev + 1) % backgroundMedia.length);
+                }}
+                autoPlay
+                loop={false}
+                preload="metadata"
+                poster={backgroundMedia[currentIndex].poster}
+              >
+                <source src={backgroundMedia[currentIndex].src} type="video/mp4" />
+              </video>
+            ) : (
+              <Image
+                src={backgroundMedia[currentIndex].src}
+                alt={backgroundMedia[currentIndex].alt}
+                fill
+                className="object-cover w-full h-full brightness-[0.65]"
+                sizes="100vw"
+                priority
+              />
+            )}
+          </div>
 
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black/90" />
         </div>

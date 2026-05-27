@@ -4,8 +4,15 @@ import Image from "next/image";
 import { Play, X } from "lucide-react";
 import { useState, useEffect } from "react";
 
+type GalleryItem = {
+  type: "image" | "video";
+  src: string;
+  alt: string;
+  thumbnail?: string;
+};
+
 export default function GalleryPage() {
-  const galleryItems = [
+  const galleryItems: GalleryItem[] = [
     
     { 
       type: "video", 
@@ -83,6 +90,7 @@ export default function GalleryPage() {
                   src={item.src}
                   alt={item.alt}
                   fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
@@ -91,6 +99,7 @@ export default function GalleryPage() {
                     src={item.thumbnail || "/images/video-placeholder.jpg"}
                     alt={item.alt}
                     fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 flex items-center justify-center z-20">
@@ -132,6 +141,7 @@ export default function GalleryPage() {
                   alt={selectedItem.alt}
                   width={1200}
                   height={800}
+                  sizes="(max-width: 768px) 100vw, 1200px"
                   className="w-full h-auto max-h-[85vh] object-contain"
                   priority
                 />
@@ -139,6 +149,8 @@ export default function GalleryPage() {
                 <video
                   controls
                   autoPlay
+                  preload="metadata"
+                  poster={selectedItem.thumbnail}
                   className="w-full max-h-[85vh] rounded-t-2xl"
                 >
                   <source src={selectedItem.src} type="video/mp4" />
