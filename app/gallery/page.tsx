@@ -52,6 +52,8 @@ const galleryItems: GalleryItem[] = [
     alt: "Daily Workshop Activity",
     thumbnail: "/images/dailyworkshopthumbnail.jpg",
   },
+   { type: "image", src: "/images/howwedoitbody.jpeg", alt: "Body Work in Progress" },
+    { type: "image", src: "/images/tjulamprepcement.jpeg", alt: "Body Work in Progress" },
 ];
 
 export default function GalleryPage() {

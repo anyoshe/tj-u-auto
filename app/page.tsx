@@ -242,19 +242,44 @@ export default function Home() {
       <ReviewSection />
 
       {/* ====================== INSURANCE PARTNERS ====================== */}
-      <section className="py-16 bg-zinc-950">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-3">Insurance Partners</h2>
-          <p className="text-gray-400 mb-10">We work with leading insurance companies for seamless claims</p>
+<section className="py-20 bg-zinc-950">
+  <div className="max-w-6xl mx-auto px-6 text-center">
+    <h2 className="text-4xl font-bold mb-4 text-white">Trusted Insurance Partners</h2>
+    <p className="text-gray-400 mb-12 max-w-2xl mx-auto">
+      We work with leading insurance companies in Kenya for fast and seamless claims processing
+    </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-75">
-            <div className="text-2xl font-semibold text-gray-300">Jubilee</div>
-            <div className="text-2xl font-semibold text-gray-300">CIC</div>
-            <div className="text-2xl font-semibold text-gray-300">APA</div>
-            <div className="text-2xl font-semibold text-gray-300">Britam</div>
-          </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-8 text-center">
+      {[
+        "Icea Lion",
+        "Sanlam Allianz",
+        "First Assurance",
+        "NCBA Insurance",
+        "Kenindia",
+        "Definite Insurance",
+        "Metropolitan",
+        "GA Insurance",
+        "Geminia",
+        "Madison Insurance",
+        "Britam",
+        "AIG",
+        "MUA Insurance",
+        "Mayfair"
+      ].map((partner, index) => (
+        <div
+          key={index}
+          className="bg-zinc-900 hover:bg-zinc-800 transition-all duration-300 py-6 px-8 rounded-2xl text-lg font-medium text-gray-200 hover:text-yellow-400 border border-transparent hover:border-yellow-400/20"
+        >
+          {partner}
         </div>
-      </section>
+      ))}
+    </div>
+
+    <p className="text-gray-500 text-sm mt-12">
+      More partnerships being added regularly
+    </p>
+  </div>
+</section>
 
       {/* ====================== CONTACT / FINAL CTA ====================== */}
       <section className="py-20 bg-black border-t border-yellow-400/20">
