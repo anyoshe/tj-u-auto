@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Calendar, Car, LogOut, Menu, X, FileText, Users } from "lucide-react";
+import { LayoutDashboard, Calendar, Car, LogOut, Menu, X, FileText, Users, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import AdminNavbar from "@/components/admin/AdminNavbar";   // ← Import your top navbar
 
@@ -58,6 +58,11 @@ export default function AdminLayout({
               <Users size={20} />
               Users
             </Link>
+            <Link href="/admin/feedbacks" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-900 text-white transition" onClick={() => setSidebarOpen(false)}>
+              <CheckCircle2 size={20} />
+              Feedback
+            </Link>
+            
           </nav>
 
           <div className="pt-6 border-t border-gray-800">

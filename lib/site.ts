@@ -4,7 +4,7 @@ export const siteContact = {
     href: "tel:+254721222585",
     whatsapp: "254721222585",
   },
-  emails: ["tjandugarage@gmail.com", "Tjanduauto@gmail.com"],
+  emails: ["tjandugarage@gmail.com", "tjanduauto@gmail.com"],
   location: "Nairobi, Kenya",
   socials: [
     {

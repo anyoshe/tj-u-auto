@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -36,6 +45,10 @@ const initialFormData = {
 
 type BookingFormData = typeof initialFormData;
 type FormErrors = Partial<Record<keyof BookingFormData, string>>;
+type WhatsAppFollowUp = {
+  bookingId: string;
+  url: string;
+};
 
 const requiredFields: Array<keyof BookingFormData> = [
   "make",
@@ -139,6 +152,7 @@ export default function BookingPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [whatsAppFollowUp, setWhatsAppFollowUp] = useState<WhatsAppFollowUp | null>(null);
 
   const updateForm = (field: keyof BookingFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -171,22 +185,65 @@ export default function BookingPage() {
       setFormData(initialFormData);
       setErrors({});
       setCurrentStep(1);
+      setWhatsAppFollowUp({
+        bookingId: result.bookingId,
+        url: result.whatsappUrl,
+      });
       setSuccessMessage(
-        `Booking submitted successfully. Your booking ID is ${result.bookingId}. Please check your email or WhatsApp for the confirmation.`
+        `Booking submitted successfully. Your booking ID is ${result.bookingId}. Please check your email for the confirmation.`
       );
-
-      window.setTimeout(() => {
-        router.push("/");
-      }, 5000);
     } else {
       alert(result.error || "Failed to submit booking. Please try again.");
     }
 
     setIsSubmitting(false);
   };
+
+  const continueWithoutWhatsApp = () => {
+    setWhatsAppFollowUp(null);
+    router.push("/");
+  };
+
+  const openWhatsApp = () => {
+    if (!whatsAppFollowUp) return;
+
+    window.open(whatsAppFollowUp.url, "_blank", "noopener,noreferrer");
+    setWhatsAppFollowUp(null);
+    router.push("/");
+  };
+
   return (
 
     <div className="min-h-screen bg-gradient-to-b from-black to-zinc-950 pt-20 pb-12">
+      <Dialog open={Boolean(whatsAppFollowUp)} onOpenChange={(open) => {
+        if (!open) continueWithoutWhatsApp();
+      }}>
+        <DialogContent className="border border-yellow-400/20 bg-zinc-950 text-white sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Almost done! Confirm on WhatsApp</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Your request is in our system. Send a copy via WhatsApp now to chat directly with our team and get a prompt response.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="rounded-xl border border-yellow-400/10 bg-black/40 p-4 text-sm text-gray-300">
+            Booking ID: <span className="font-semibold text-yellow-400">{whatsAppFollowUp?.bookingId}</span>
+          </div>
+
+          <DialogFooter className="border-zinc-800 bg-zinc-900/80">
+            <DialogClose asChild>
+              <Button type="button" variant="outline" onClick={continueWithoutWhatsApp} className="border-zinc-700 bg-transparent text-white hover:bg-zinc-800 hover:text-white">
+                Not now
+              </Button>
+            </DialogClose>
+            <Button type="button" onClick={openWhatsApp} className="bg-yellow-400 text-black hover:bg-yellow-300">
+              <MessageCircle className="mr-2 h-4 w-4" />
+              Send Via WhatsApp
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-10 mt-6">
           <h1 className="text-4xl font-bold mb-3">Book Your Service</h1>
@@ -332,7 +389,7 @@ export default function BookingPage() {
                   {isSubmitting ? "Submitting..." : "Submit Booking Request"}
                 </Button>
                 <p className="text-center text-sm text-gray-500 mt-4">
-                  You will receive confirmation via WhatsApp/Email
+                  You will receive confirmation by email. WhatsApp sharing is optional after submission.
                 </p>
               </div>
             </div>

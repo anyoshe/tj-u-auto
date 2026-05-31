@@ -141,12 +141,19 @@ export function generateClientBookingEmail(
 }
 
 // Generate admin notification message
-export function generateAdminWhatsAppMessage(bookingId: string, customerName: string, serviceType: string, phoneNumber: string): string {
+export function generateAdminWhatsAppMessage(
+  bookingId: string,
+  customerName: string,
+  serviceType: string,
+  phoneNumber: string,
+  customerEmail: string
+): string {
   return `🔔 New Booking Received!
 
 Booking ID: ${bookingId}
 Customer: ${customerName}
 Phone: ${phoneNumber}
+Email: ${customerEmail}
 Service Type: ${serviceType}
 
 Please log in to the admin dashboard to review and respond to this booking.

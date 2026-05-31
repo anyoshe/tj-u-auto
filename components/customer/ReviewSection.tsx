@@ -6,6 +6,11 @@ import { Star } from "lucide-react";
 export default function ReviewSection() {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
+  const [name, setName] = useState("");
+  const [vehicle, setVehicle] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<null | { ok: boolean; msg?: string }>(null);
 
   return (
     <section className="py-20 bg-black border-t border-yellow-400/10">
@@ -58,7 +63,36 @@ export default function ReviewSection() {
           </p>
 
           {/* Form */}
-          <form className="space-y-6">
+          <form
+            className="space-y-6"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setSubmitting(true);
+              setStatus(null);
+
+              try {
+                const res = await fetch('/api/feedback', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name, vehicle, rating, message }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                  setStatus({ ok: true, msg: 'Thanks — your review was submitted.' });
+                  setName('');
+                  setVehicle('');
+                  setMessage('');
+                  setRating(0);
+                } else {
+                  setStatus({ ok: false, msg: data.error || 'Submission failed' });
+                }
+              } catch (err: unknown) {
+                setStatus({ ok: false, msg: err instanceof Error ? err.message : 'Submission error' });
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
 
             <div>
               <label className="block mb-2 text-sm text-gray-300">
@@ -67,6 +101,8 @@ export default function ReviewSection() {
 
               <input
                 type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
                 className="w-full bg-black border border-zinc-700 rounded-2xl px-4 py-4 text-white focus:border-yellow-400 focus:outline-none transition"
               />
@@ -79,6 +115,8 @@ export default function ReviewSection() {
 
               <input
                 type="text"
+                value={vehicle}
+                onChange={(e) => setVehicle(e.target.value)}
                 placeholder="e.g Toyota Prado"
                 className="w-full bg-black border border-zinc-700 rounded-2xl px-4 py-4 text-white focus:border-yellow-400 focus:outline-none transition"
               />
@@ -91,6 +129,8 @@ export default function ReviewSection() {
 
               <textarea
                 rows={5}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tell us about your experience..."
                 className="w-full bg-black border border-zinc-700 rounded-2xl px-4 py-4 text-white focus:border-yellow-400 focus:outline-none transition"
               />
@@ -98,10 +138,17 @@ export default function ReviewSection() {
 
             <button
               type="submit"
-              className="w-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-4 rounded-2xl transition-all duration-300 hover:scale-[1.01]"
+              disabled={submitting}
+              className="w-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-4 rounded-2xl transition-all duration-300 hover:scale-[1.01] disabled:opacity-60"
             >
-              Submit Review
+              {submitting ? 'Submitting…' : 'Submit Review'}
             </button>
+
+            {status && (
+              <p className={`text-center mt-2 ${status.ok ? 'text-green-400' : 'text-red-400'}`}>
+                {status.msg}
+              </p>
+            )}
 
           </form>
         </div>
