@@ -84,7 +84,7 @@ function formatBookingWhatsAppMessage({
 
 export async function createBooking(formData: BookingFormData): Promise<CreateBookingResult> {
   try {
-    const email = formData.email?.trim() || null;
+    const email = formData.email?.trim().toLowerCase() || null;
     const phone = formData.phone?.replace(/\D/g, "") || null;
 
     const customerByEmail = email
@@ -153,7 +153,7 @@ export async function createBooking(formData: BookingFormData): Promise<CreateBo
 
     // Send notifications after booking is created
     const bookingId = result.booking.id;
-    const customerName = result.customer.name || "Customer";
+    const customerName = formData.fullName.trim() || result.customer.name || "Customer";
     const customerPhone = phone;
     const customerEmail = email;
     const vehicleDetails = `${formData.make} ${formData.model}`;

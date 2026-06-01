@@ -55,7 +55,7 @@ export default async function AdminDashboard() {
   ) as Partial<Record<BookingStatus, number>>;
 
   return (
-    <div className="space-y-8 pt-10">
+    <div className="space-y-8">
       <AdminPageHeader
         title="Welcome Back"
         subtitle="Here's what's happening at TJ & U Auto today"

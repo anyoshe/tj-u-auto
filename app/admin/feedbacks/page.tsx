@@ -15,7 +15,7 @@ export default async function AdminFeedbackPage() {
   }
 
   return (
-    <div className="space-y-8 pt-10">
+    <div className="space-y-8">
       <AdminPageHeader title="Feedback" subtitle="View and approve customer feedback" />
 
       <div className="bg-zinc-900 p-8 rounded-3xl border border-white/10">
