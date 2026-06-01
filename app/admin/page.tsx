@@ -1,41 +1,42 @@
 import { prisma } from "@/lib/prisma";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import { BookingStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
 const bookingStatusCards = [
   {
-    status: BookingStatus.PENDING,
+    status: "PENDING" as const,
     label: "Pending Bookings",
     className: "border-yellow-400/10 hover:border-yellow-400 text-yellow-400",
   },
   {
-    status: BookingStatus.RECEIVED,
+    status: "RECEIVED" as const,
     label: "Received",
     className: "border-cyan-400/10 hover:border-cyan-400 text-cyan-400",
   },
   {
-    status: BookingStatus.IN_PROGRESS,
+    status: "IN_PROGRESS" as const,
     label: "In Progress",
     className: "border-blue-400/10 hover:border-blue-400 text-blue-400",
   },
   {
-    status: BookingStatus.READY_FOR_DELIVERY,
+    status: "READY_FOR_DELIVERY" as const,
     label: "Ready for Delivery",
     className: "border-emerald-400/10 hover:border-emerald-400 text-emerald-400",
   },
   {
-    status: BookingStatus.COMPLETED,
+    status: "COMPLETED" as const,
     label: "Completed",
     className: "border-green-400/10 hover:border-green-400 text-green-400",
   },
   {
-    status: BookingStatus.CANCELLED,
+    status: "CANCELLED" as const,
     label: "Cancelled",
     className: "border-red-400/10 hover:border-red-400 text-red-400",
   },
-];
+] as const;
+
+type BookingStatus = (typeof bookingStatusCards)[number]["status"];
 
 export default async function AdminDashboard() {
   const [totalBookings, pendingQuotesCount, statusCounts] = await Promise.all([
