@@ -19,6 +19,7 @@ export default async function BookingsPage() {
     registrationNo: booking.registrationNo,
     chassisNo: booking.chassisNo,
     serviceType: booking.serviceType,
+    description: booking.description ?? "",
     preferredDateLabel: format(new Date(booking.preferredDate), "dd MMM yyyy"),
     status: booking.status,
   }));

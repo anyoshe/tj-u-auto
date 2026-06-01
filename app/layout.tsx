@@ -7,8 +7,10 @@ import StackedButtons from "@/components/customer/StackedButtons";
 import NextAuthProvider from "@/components/providers/NextAuthProvider"; // Import the provider
 
 const inter = Inter({ subsets: ["latin"] });
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "TJ and U Auto | Professional Car Service in Nairobi",
   description: "Expert auto repair, servicing, accident repair & maintenance. Book online or call +254 790 407 785.",
   keywords: ["car service nairobi", "auto repair", "accident repair", "vehicle maintenance", "tj and u auto"],

@@ -13,6 +13,7 @@ type BookingListItem = {
   registrationNo: string;
   chassisNo: string | null;
   serviceType: string;
+  description: string;
   preferredDateLabel: string;
   status: string;
 };
@@ -38,6 +39,7 @@ export function BookingsList({ bookings }: { bookings: BookingListItem[] }) {
               <th className="text-left p-6">Customer</th>
               <th className="text-left p-6">Vehicle</th>
               <th className="text-left p-6">Service</th>
+              <th className="text-left p-6">Description</th>
               <th className="text-left p-6">Date</th>
               <th className="text-left p-6">Status</th>
               <th className="text-left p-6">Actions</th>
@@ -69,6 +71,7 @@ export function BookingsList({ bookings }: { bookings: BookingListItem[] }) {
                   ) : null}
                 </td>
                 <td className="p-6">{booking.serviceType}</td>
+                <td className="p-6 text-sm max-w-sm break-words">{booking.description || "No description provided"}</td>
                 <td className="p-6 text-sm">{booking.preferredDateLabel}</td>
                 <BookingStatusControl
                   bookingId={booking.id}
@@ -104,6 +107,9 @@ export function BookingsList({ bookings }: { bookings: BookingListItem[] }) {
               ) : null}
               <p>
                 <strong>Service:</strong> {booking.serviceType}
+              </p>
+              <p>
+                <strong>Description:</strong> {booking.description || "No description provided"}
               </p>
               <p>
                 <strong>Date:</strong> {booking.preferredDateLabel}

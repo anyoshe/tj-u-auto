@@ -6,26 +6,43 @@ export async function sendWhatsAppNotification(
   message: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
-      console.warn('Twilio credentials not configured');
+    if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_WHATSAPP_NUMBER) {
+      console.warn('Twilio WhatsApp configuration is incomplete');
       return { success: false, error: 'WhatsApp service not configured' };
     }
 
-    const response = await fetch('https://api.twilio.com/2010-04-01/Accounts/' + process.env.TWILIO_ACCOUNT_SID + '/Messages.json', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Basic ' + Buffer.from(process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN).toString('base64'),
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        'From': process.env.TWILIO_WHATSAPP_NUMBER || 'whatsapp:+14155552368',
-        'To': `whatsapp:+${phoneNumber}`,
-        'Body': message,
-      }).toString(),
-    });
+    const normalizedTo = phoneNumber.trim().startsWith('+')
+      ? `whatsapp:${phoneNumber.trim()}`
+      : `whatsapp:+${phoneNumber.replace(/\D/g, '')}`;
+
+    const response = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization:
+            'Basic ' +
+            Buffer.from(process.env.TWILIO_ACCOUNT_SID + ':' + process.env.TWILIO_AUTH_TOKEN).toString('base64'),
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          From: process.env.TWILIO_WHATSAPP_NUMBER,
+          To: normalizedTo,
+          Body: message,
+        }).toString(),
+      }
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to send WhatsApp message');
+      const responseText = await response.text();
+      let errorDetail = responseText;
+      try {
+        const bodyJson = JSON.parse(responseText);
+        errorDetail = bodyJson.message || JSON.stringify(bodyJson);
+      } catch {
+        // keep raw text if JSON parsing fails
+      }
+      throw new Error(`Failed to send WhatsApp message (${response.status}): ${errorDetail}`);
     }
 
     return { success: true };
@@ -42,13 +59,22 @@ export async function sendEmailNotification(
   htmlContent: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // Check if email credentials are configured
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
       console.warn('Email credentials not configured');
       return { success: false, error: 'Email service not configured' };
     }
 
-    // Dynamically import nodemailer only when needed
+    if (
+      process.env.EMAIL_SERVICE === 'gmail' &&
+      (process.env.EMAIL_USER.includes('your-email') || process.env.EMAIL_PASSWORD.includes('your-password'))
+    ) {
+      console.warn('Gmail credentials appear to be placeholder values');
+      return {
+        success: false,
+        error: 'Email credentials are invalid or not configured. Use a valid Gmail app password or SMTP credentials.',
+      };
+    }
+
     let nodemailer: any;
     try {
       // @ts-ignore

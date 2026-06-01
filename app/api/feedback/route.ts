@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { sendEmailNotification, sendWhatsAppNotification } from '@/lib/notifications';
+import { sendEmailNotification } from '@/lib/notifications';
 
 export async function POST(req: Request) {
   try {
@@ -23,16 +23,8 @@ export async function POST(req: Request) {
       },
     });
 
-    // Notify admin
-    const adminPhone = process.env.ADMIN_PHONE_NUMBER;
+    // Notify admin by email; WhatsApp is handled manually through the UI flow.
     const adminEmail = process.env.ADMIN_EMAIL;
-
-    const summary = `New feedback received\n\nFrom: ${name || 'Anonymous'}\nRating: ${rating}\nPhone: ${phone || 'N/A'}\nEmail: ${email || 'N/A'}\nVehicle: ${vehicle || 'N/A'}\n\nMessage:\n${message}`;
-
-    if (adminPhone) {
-      const result = await sendWhatsAppNotification(adminPhone, summary);
-      if (!result.success) console.warn('Feedback WhatsApp notification failed:', result.error);
-    }
 
     if (adminEmail) {
       const html = `<h2>New Feedback Received</h2><p><strong>From:</strong> ${name || 'Anonymous'}</p><p><strong>Rating:</strong> ${rating}</p><p><strong>Phone:</strong> ${phone || 'N/A'}</p><p><strong>Email:</strong> ${email || 'N/A'}</p><p><strong>Vehicle:</strong> ${vehicle || 'N/A'}</p><h3>Message</h3><p>${message}</p>`;

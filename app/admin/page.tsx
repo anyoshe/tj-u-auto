@@ -38,22 +38,20 @@ const bookingStatusCards = [
 ];
 
 export default async function AdminDashboard() {
-  const [bookingCounts, totalBookings, pendingQuotesCount] =
-    await Promise.all([
-      prisma.booking.groupBy({
-        by: ["status"],
-        _count: {
-          _all: true,
-        },
-      }),
-      prisma.booking.count(),
-      prisma.quote.count({
-        where: { status: "PENDING" },
-      }),
-    ]);
+  const [totalBookings, pendingQuotesCount, statusCounts] = await Promise.all([
+    prisma.booking.count(),
+    prisma.quote.count({
+      where: { status: "PENDING" },
+    }),
+    Promise.all(
+      bookingStatusCards.map((card) =>
+        prisma.booking.count({ where: { status: card.status } })
+      )
+    ),
+  ]);
 
   const countByStatus = Object.fromEntries(
-    bookingCounts.map((item) => [item.status, item._count._all])
+    bookingStatusCards.map((card, index) => [card.status, statusCounts[index]])
   ) as Partial<Record<BookingStatus, number>>;
 
   return (
